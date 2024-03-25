@@ -1,9 +1,9 @@
-import functions from 'firebase-functions';
-import express from 'express';
-import cheerio from 'cheerio';
-import axios from 'axios';
-import cors from 'cors';
-import NodeCache from 'node-cache';
+const functions = require('firebase-functions');
+const express = require('express');
+const cheerio = require('cheerio');
+const axios = require('axios');
+const cors = require('cors');
+const NodeCache = require('node-cache');
 
 const app = express();
 app.use(cors());
@@ -12,7 +12,7 @@ const cache = new NodeCache();
 const cacheKey = "wordle_list";
 const scrapeInterval = 24 * 60 * 60; // Cache duration (24 hours in seconds)
 
-app.get("/", (request, response) => {
+app.get("/", (req, res) => {
   res.send("Hello from Firebase!");
 });
 
@@ -38,12 +38,11 @@ app.get('/scrapeWords', async (req, res) => {
 
     // Update cache with fresh data
     cache.set(cacheKey, { data: wordList, fetchedAt: Date.now() });
-
-    res.json({wordList:1});
+    res.json(wordList);
   } catch (error) {
     console.error("Error scraping words:", error);
     res.status(500).send("Error fetching word list");
   }
 });
 
-export const api = functions.https.onRequest(app);
+exports.api = functions.https.onRequest(app);
