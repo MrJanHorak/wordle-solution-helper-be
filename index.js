@@ -30,10 +30,10 @@ app.get('/scrapeWords', async (req, res) => {
     const html = response.data;
     const $ = cheerio.load(html);
 
-    const wordList = [];
+    const wordList = {};
     $('ul.inline > li').each(function() {
       const word = $(this).text();
-      wordList.push(word);
+      wordList[word]=1;
     });
 
     // Update cache with fresh data
